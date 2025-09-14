@@ -6,8 +6,8 @@ dotenv.config();
 
 export const registerUser = async(req, res) => {
     try {
-        const { username, password, email, isAdmin } = req.body;
-        if ((!username && !email) || !password || isAdmin === undefined) {
+        const { userName, password, email, isAdmin } = req.body;
+        if ((!userName && !email) || !password || isAdmin === undefined) {
             return res.status(400).json({ message: "Username or email and password are required" });
         }
         const find= await User.findOne({ email:email });
@@ -15,7 +15,7 @@ export const registerUser = async(req, res) => {
             return res.status(400).json({ message: "Email already exists" });
         }
         const hash= await bcrypt.hash(password,10);
-        const user = new User({ username, email, password: hash, isAdmin });
+        const user = new User({ userName, email, password: hash, isAdmin });
         await user.save();
         return res.status(201).json({ message: "User registered successfully" ,success:true});
     } catch (error) {
@@ -40,6 +40,11 @@ export const loginUser = async(req, res) => {
         return res.status(400).json({ message: "Invalid password" });
     }
     const token=jwt.sign({ id: user._id,isAdmin:user.isAdmin }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,   
+  sameSite: "none"
+});
     return res.status(200).json({ message: "Login successful", token });
  } catch (error) {
     console.log("error in login user",error);

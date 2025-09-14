@@ -1,34 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import React from "react"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import "./App.css"
 
+import Home from "./component/Home"
+import Login from "./component/Login"
+import BookingPage from "./component/BookingPage"
+import MyBookingPage from "./component/MyBookingPage"
+import Register from "./component/Register"
+import CreateEvent from "./component/CreateEvent"
+import Navbar from "./component/Navbar"
+import { Outlet } from "react-router-dom"
+
+
+const Layout = () => {
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <Navbar />
+      <div className="p-4">
+        <Outlet />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
+  )
+}
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />, 
+    children: [
+      { path: "/home", element: <Home/> },
+      { path: "/login", element: <Login /> },
+      { path: "/booking/:eventId", element: <BookingPage /> },
+      { path: "/mybooking", element: <MyBookingPage /> },
+      { path: "/register", element: <Register /> },
+      { path: "/createevent", element: <CreateEvent /> },
+    ],
+  },
+])
+
+function App() {
+  return (
+    <div className="w-screen h-screen">
+      <RouterProvider router={router} />
+    </div>
   )
 }
 
